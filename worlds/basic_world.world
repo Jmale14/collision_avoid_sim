@@ -1,5 +1,4 @@
-<?xml version="1.0" ?>
-<sdf version="1.6">
+<sdf version='1.7'>
   <world name="default">
     <physics type="ode">
       <ode>
@@ -29,99 +28,611 @@
 
     <model name="iris">
       <include>
-        <uri>model://iris_with_standoffs_demo</uri>
+        <uri>model://iris_with_standoffs</uri>
       </include>
 
 
+      <!-- add depth camera -->
+      <link name='depth_camera'>
+        <pose>0 0 0 0 0 0</pose>
+          <collision name="collision">
+            <pose>0.1 0 0.2 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.01 0.01 0.01</size>
+              </box>
+            </geometry>
+          </collision>
+          <visual name="visual">
+            <pose>0.1 0 0.2 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.01 0.01 0.01</size>
+              </box>
+            </geometry>
+            <!--
+            <geometry>
+              <mesh>
+                <uri>model://home/james/sim_catkin_ws/src/realsense-ros/realsense2_description/d435.dae</uri>
+              </mesh>
+            </geometry>
+            -->
+          </visual>
+          <inertial>
+            <mass>0.016</mass>
+            <inertia>
+               <ixx>0.0001</ixx>
+               <ixy>0</ixy>
+               <ixz>0</ixz>
+               <iyy>0.0001</iyy>
+               <iyz>0</iyz>
+               <izz>0.0001</izz>
+               <!-- low intertia necessary to avoid not disturb the drone -->
+            </inertia>
+          </inertial>
 
-
-
-
-      <!-- add new camera -->
-      <link name='camera'>
-        <pose>0 -0.01 0.070 .8 0 1.57</pose>
-        <inertial>
-          <pose>0 0 0 0 0 0</pose>
-          <mass>0.1</mass>
-          <inertia>
-            <ixx>0.001</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.001</iyy>
-            <iyz>0</iyz>
-            <izz>0.001</izz>
-          </inertia>
-        </inertial>
-        <visual name='visual'>
-          <pose>0 0 0 0 0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.025</radius>
-              <length>0.025</length>
-            </cylinder>
-          </geometry>
-           <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-        </visual>
-
-        <sensor name="camera" type="camera">
-          <pose>0 0 0 -1.57 -1.57 0</pose>
+        <sensor name="${link_name}_camera" type="depth">
+          <pose>0.1 0 0.2 0 0 0</pose>
+          <update_rate>20</update_rate>
           <camera>
-            <horizontal_fov>1.0472</horizontal_fov>
+            <horizontal_fov>1.047198</horizontal_fov>
             <image>
               <width>640</width>
               <height>480</height>
+              <format>R8G8B8</format>
             </image>
             <clip>
               <near>0.05</near>
-              <far>1000</far>
+              <far>3</far>
             </clip>
           </camera>
-          <always_on>1</always_on>
-          <update_rate>10</update_rate>
-          <visualize>true</visualize>
+      <!--
+          <plugin name="${link_name}_controller" filename="libgazebo_ros_openni_kinect.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>1.0</updateRate>
 
-         <!--  <plugin name="irlock" filename="libArduCopterIRLockPlugin.so">
-              <fiducial>irlock_beacon_01</fiducial>
-          </plugin> -->
-          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+            <cameraName>depth_camera</cameraName>
+            <imageTopicName>/depth_camera/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/depth_camera/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/depth_camera/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/depth_camera/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/depth_camera/depth/points</pointCloudTopicName>
+            
+            <frameName>${frame_name}</frameName>
+            <pointCloudCutoff>0.5</pointCloudCutoff>
+            <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+          </plugin>
+-->
+          <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+          <baseline>0.2</baseline>
           <alwaysOn>true</alwaysOn>
+          <!-- Keep this zero, update_rate in the parent <sensor> tag
+            will control the frame rate. -->
           <updateRate>0.0</updateRate>
-          <cameraName>webcam</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <cameraName>camera_ir</cameraName>
+          <imageTopicName>/camera/color/image_raw</imageTopicName>
+          <cameraInfoTopicName>/camera/color/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+          <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
           <frameName>camera_link</frameName>
-          <hackBaseline>0.07</hackBaseline>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
-      </plugin>
+          <pointCloudCutoff>0.5</pointCloudCutoff>
+          <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+          <distortionK1>0</distortionK1>
+          <distortionK2>0</distortionK2>
+          <distortionK3>0</distortionK3>
+          <distortionT1>0</distortionT1>
+          <distortionT2>0</distortionT2>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
+        </plugin>
+
 
         </sensor>
 
       </link>
 
       <!-- attach camera -->
-      <joint type="revolute" name="base_camera_joint">
-        <pose>0 0 0.0 0 0 0</pose>
-        <parent>iris::iris_demo::gimbal_small_2d::tilt_link</parent>
-        <child>camera</child>
-        <axis>
-          <limit>
-            <lower>0</lower>
-            <upper>0</upper>
-          </limit>
-          <xyz>0 0 1</xyz>
-          <use_parent_model_frame>true</use_parent_model_frame>
-        </axis>
+      <joint name="base_camera_joint" type="fixed">
+        <pose>0 0 0 0 0 0</pose>
+        <parent>iris::iris::base_link</parent>
+        <child>depth_camera</child>
       </joint>
+
+
+
+
     </model>
 
+      
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <wind/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <state world_name='default'>
+      <sim_time>284 819000000</sim_time>
+      <real_time>41 225571753</real_time>
+      <wall_time>1613930163 49322549</wall_time>
+      <iterations>28074</iterations>
+      <model name='beer'>
+        <pose>2.37029 -1.67092 0.775 1e-06 -8e-06 0.000142</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.37029 -1.67092 0.89 1e-06 -8e-06 0.000142</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>-5.1e-05 -1.4e-05 19.5999 0.00012 -0.000441 0</acceleration>
+          <wrench>-2e-05 -5e-06 7.64395 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cafe_table'>
+        <pose>2.50606 -1.72041 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>2.50606 -1.72041 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='collapsed_industrial'>
+        <pose>-12.679 13.6065 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-12.679 13.6065 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='gazebo'>
+        <pose>8.43563 11.6326 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>8.43563 11.6326 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='iris'>
+        <pose>-7e-06 0.000291 -0.000424 -0.002123 -0 -2.8e-05</pose>
+        <scale>1 1 1</scale>
+        <link name='camera'>
+          <pose>0.019977 -0.009534 0.089613 2.37079 0.002124 1.56997</pose>
+          <velocity>9e-06 -6e-06 6e-06 -0.000501 4e-06 0.000485</velocity>
+          <acceleration>0.018239 -0.007433 -0.00018 -0.676907 0.001975 0.686679</acceleration>
+          <wrench>0.001824 -0.000743 -1.8e-05 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::gimbal_small_2d::base_link'>
+          <pose>-7e-06 -0.00956 0.069597 1.57 0.002123 1.56997</pose>
+          <velocity>1e-06 2e-06 7e-06 -2.6e-05 -2e-06 -3.1e-05</velocity>
+          <acceleration>0.002365 -6e-05 -7e-06 0.000348 -0.004114 -0.061008</acceleration>
+          <wrench>0.000473 -1.2e-05 -1e-06 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::gimbal_small_2d::tilt_link'>
+          <pose>0.019977 -0.009534 0.089613 3.14079 0.002123 1.56997</pose>
+          <velocity>4e-06 -5e-06 7e-06 6e-06 -6.4e-05 -6.1e-05</velocity>
+          <acceleration>0.007412 -0.00693 6.6e-05 0.025709 -0.127304 -0.082214</acceleration>
+          <wrench>7.4e-05 -6.9e-05 1e-06 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::base_link'>
+          <pose>-7e-06 0.000705 0.194498 -0.002123 -0 -2.8e-05</pose>
+          <velocity>1e-06 5e-06 6e-06 -2.6e-05 3e-06 0</velocity>
+          <acceleration>0.001093 -5.4e-05 -5e-06 0.000276 0.005575 -4e-06</acceleration>
+          <wrench>0.001639 -8.1e-05 -8e-06 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::iris/ground_truth/odometry_sensorgt_link'>
+          <pose>-7e-06 0.000705 0.194498 -0.002123 -0 -2.8e-05</pose>
+          <velocity>1e-06 5e-06 6e-06 -2.6e-05 -2e-06 7e-06</velocity>
+          <acceleration>0.001863 -6.3e-05 -7e-06 0.000351 -0.003905 0.013585</acceleration>
+          <wrench>0.000279 -9e-06 -1e-06 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::iris/imu_link'>
+          <pose>-7e-06 0.000705 0.194498 -0.002123 -0 -2.8e-05</pose>
+          <velocity>1e-06 5e-06 6e-06 -2.6e-05 -2e-06 7e-06</velocity>
+          <acceleration>0.001844 -6.3e-05 -7e-06 0.000351 -0.003907 0.013589</acceleration>
+          <wrench>0.000277 -9e-06 -1e-06 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::rotor_0'>
+          <pose>0.129987 -0.219249 0.217965 -0.002123 0 1e-06</pose>
+          <velocity>1e-06 6e-06 1.2e-05 -2.6e-05 -2e-06 0</velocity>
+          <acceleration>0.002317 0.000275 0.000427 0.00035 -0.003936 2e-05</acceleration>
+          <wrench>5.8e-05 7e-06 1.1e-05 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::rotor_1'>
+          <pose>-0.130001 0.200757 0.217074 -0.002123 0 -3e-05</pose>
+          <velocity>1e-06 6e-06 1e-06 -2.6e-05 -2e-06 0</velocity>
+          <acceleration>0.001215 -0.000407 -0.000451 0.000343 -0.003949 2e-05</acceleration>
+          <wrench>3e-05 -1e-05 -1.1e-05 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::rotor_2'>
+          <pose>0.129999 0.22075 0.217031 -0.002123 -0 -4e-06</pose>
+          <velocity>1e-06 6e-06 1e-06 -2.6e-05 -2e-06 0</velocity>
+          <acceleration>0.00115 0.000271 0.00058 0.000329 -0.003961 2e-05</acceleration>
+          <wrench>2.9e-05 7e-06 1.5e-05 0 -0 0</wrench>
+        </link>
+        <link name='iris_demo::iris::rotor_3'>
+          <pose>-0.130012 -0.199242 0.217923 -0.002123 -0 -3.6e-05</pose>
+          <velocity>1e-06 6e-06 1.1e-05 -2.6e-05 -2e-06 0</velocity>
+          <acceleration>0.002257 -0.00042 -0.00059 0.000343 -0.003971 2.1e-05</acceleration>
+          <wrench>5.6e-05 -1e-05 -1.5e-05 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='oak_tree'>
+        <pose>-3.67003 -6.95806 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-3.67003 -6.95806 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='water_tower'>
+        <pose>9.51463 -5.34853 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>9.51463 -5.34853 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <model name='collapsed_industrial'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://collapsed_industrial/meshes/collapsed_industrial.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://collapsed_industrial/meshes/collapsed_industrial.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-12.679 13.6065 0 0 -0 0</pose>
+    </model>
+    <model name='cafe_table'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='surface'>
+          <pose>0 0 0.755 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.913 0.913 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='column'>
+          <pose>0 0 0.37 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.042 0.042 0.74</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='base'>
+          <pose>0 0 0.02 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.56 0.56 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://cafe_table/meshes/cafe_table.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.19575 -1.48899 0 0 -0 0</pose>
+    </model>
+    <model name='beer'>
+      <link name='link'>
+        <pose>0 0 0.115 0 -0 0</pose>
+        <inertial>
+          <mass>0.39</mass>
+          <inertia>
+            <ixx>0.00058</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00058</iyy>
+            <iyz>0</iyz>
+            <izz>0.00019</izz>
+          </inertia>
+          <pose>0 0 0 0 -0 0</pose>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.055</radius>
+              <length>0.23</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.055</radius>
+              <length>0.23</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://beer/materials/scripts</uri>
+              <uri>model://beer/materials/textures</uri>
+              <name>Beer/Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>2.3703 -1.67089 0 0 -0 0</pose>
+    </model>
+    <model name='gazebo'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <scale>3 3 2.5</scale>
+              <uri>model://gazebo/meshes/gazebo.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <scale>3 3 2.5</scale>
+              <uri>model://gazebo/meshes/gazebo.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>8.43563 11.6326 0 0 -0 0</pose>
+    </model>
+    <model name='oak_tree'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://oak_tree/meshes/oak_tree.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='branch'>
+          <geometry>
+            <mesh>
+              <uri>model://oak_tree/meshes/oak_tree.dae</uri>
+              <submesh>
+                <name>Branch</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://oak_tree/materials/scripts/</uri>
+              <uri>model://oak_tree/materials/textures/</uri>
+              <name>OakTree/Branch</name>
+            </script>
+          </material>
+        </visual>
+        <visual name='bark'>
+          <geometry>
+            <mesh>
+              <uri>model://oak_tree/meshes/oak_tree.dae</uri>
+              <submesh>
+                <name>Bark</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://oak_tree/materials/scripts/</uri>
+              <uri>model://oak_tree/materials/textures/</uri>
+              <name>OakTree/Bark</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-3.67003 -6.95806 0 0 -0 0</pose>
+    </model>
+    <model name='water_tower'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://water_tower/meshes/water_tower.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://water_tower/meshes/water_tower.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>9.51463 -5.34853 0 0 -0 0</pose>
+    </model>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>1.12984 -0.958154 0.593353 0 0.275643 2.35619</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
   </world>
 </sdf>
