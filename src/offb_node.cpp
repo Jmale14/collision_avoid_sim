@@ -15,7 +15,7 @@ void state_cb(const mavros_msgs::State::ConstPtr& msg){
     current_state = *msg;
 }
 
-int positions[6][3] = {{0,0,0}, {0,0,5}, {5,0,5}, {5,5,5}, {0,5,5}, {15,-5,5}};
+int positions[6][3] = {{0,0,0}, {0,0,4}, {5,0,4}, {5,5,4}, {0,5,4}, {15,-5,4}};
 
 
 int main(int argc, char **argv)

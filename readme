@@ -1,0 +1,27 @@
+#Ubuntu 20, ROS Noetic, Gazebo 11
+
+# PX4 install
+https://docs.px4.io/master/en/development/development.html
+
+# Install mavros stuff from source, use catkin_make
+https://docs.px4.io/master/en/ros/mavros_installation.html
+
+
+# To run gazebo sim sitl link thing:
+https://docs.px4.io/master/en/simulation/ros_interface.html
+(if build fails with gstreamer ref might need to run: sudo apt-get install libgstreamer-plugins-base1.0-dev)
+
+
+## To run stuff:
+# QGroundControl:
+./QGroundControl.AppImage 
+
+# Launch file with everything in:
+cd catkin_ws
+catkin build
+source devel/setup.bash
+source src/PX4-Autopilot/Tools/setup_gazebo.bash $(pwd)/src/PX4-Autopilot $(pwd)/src/PX4-Autopilot/build/px4_sitl_default
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot/Tools/sitl_gazebo
+roslaunch collision_avoid_sim mavros_posix_test_avoidance.launch 
+
