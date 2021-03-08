@@ -19,6 +19,8 @@ sudo bash ./install_geographiclib_datasets.sh
 sudo apt-get install python3-catkin-tools python3-rosinstall-generator -y
 sudo apt install python3-catkin-lint python3-pip
 pip3 install osrf-pycommon
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws
 catkin init
 wstool init src
 rosinstall_generator --rosdistro noetic mavlink | tee /tmp/mavros.rosinstall
@@ -55,8 +57,8 @@ git clone https://github.com/Jmale14/collision_avoid_sim.git
 cd catkin_ws/
 catkin build
 source devel/setup.bash
-source src/PX4-Autopilot/Tools/setup_gazebo.bash $(pwd)/src/PX4-Autopilot $(pwd)/src/PX4-Autopilot/build/px4_sitl_default
-export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot
-export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot/Tools/sitl_gazebo
+##ignore# source src/PX4-Autopilot/Tools/setup_gazebo.bash $(pwd)/src/PX4-Autopilot $(pwd)/src/PX4-Autopilot/build/px4_sitl_default
+##ignore# export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot
+##ignore# export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd)/src/PX4-Autopilot/Tools/sitl_gazebo
 roslaunch collision_avoid_sim mavros_posix_test_avoidance.launch 
 

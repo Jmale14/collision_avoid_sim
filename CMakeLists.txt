@@ -213,3 +213,7 @@ target_link_libraries(offb_node
    ${catkin_LIBRARIES}
 )
 
+catkin_add_env_hooks(px4_env SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
+
+
