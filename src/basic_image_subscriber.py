@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import rospy
-from sensor_msgs.msg import PointCloud2
+from sensor_msgs.msg import Image
 import cv2
+from cv_bridge import CvBridge
 
 def callback(data):
-    image = data.data
+    bridge = CvBridge()
+    image = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
     cv2.imshow('depth image', image)
+    cv2.waitKey(3)
     
 def listener():
 
@@ -16,7 +19,7 @@ def listener():
     # run simultaneously.
     rospy.init_node('listener', anonymous=True)
 
-    rospy.Subscriber("depth/image_raw", PointCloud2, callback)
+    rospy.Subscriber("camera_front/depth/image_raw", Image, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
