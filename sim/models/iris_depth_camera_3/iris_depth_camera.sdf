@@ -1,5 +1,6 @@
+<?xml version="1.0"?>
 <sdf version='1.5'>
-  <model name='iris_depth_camera'>
+  <model name='iris_depth_camera' xmlns:xacro="http://ros.org/wiki/xacro">
     <include>
       <uri>model://iris</uri>
     </include>
@@ -287,6 +288,14 @@
         </limit>
       </axis>
     </joint> -->
+<!--
+    <xacro:include filename="$(find realsense-ros)/realsense_description/urdf/_d435.urdf.xacro" />
+<sensor_d435 parent="link">
+    <origin xyz="0.0 0.2 0" rpy="0 0 0"/>
+  </sensor_d435>
+-->
+<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find realsense2_description)/urdf/_d435.urdf.xacro' use_nominal_extrinsics:=true add_plug:=true" />
 
   </model>
+
 </sdf>
