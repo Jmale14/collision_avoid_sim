@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot name="realsense2_camera_iris" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <!--<param name="iris_description" textfile="$(find collision_avoid_sim)/urdf/iris.urdf" />-->
+  <xacro:include filename="$(find collision_avoid_sim)/urdf/iris.urdf" />
+  
+<!--
+<link name="iris">
+  <include>
+    <uri>model://iris</uri>
+  </include>
+</link>-->
+<include>
+    <uri>iris</uri>
+  </include>
+  
+  <!--<model name="rs_camera">
+  <pose>0.1 0 -0.03 0 0 0</pose>
+    <link name="link">
+      <xacro:sensor_d435 name="camera" topics_ns="camera" parent="iris::base_link" publish_pointcloud="true">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+      </xacro:sensor_d435>  -->
+    <!--</link>
+  </model>
+  
+  <joint name="camera_link" type="fixed">
+    <child>camera::link</child>
+    <parent>iris::base_link</parent>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <upper>0</upper>
+        <lower>0</lower>
+      </limit>
+    </axis>
+  </joint>-->
+    
+</robot>

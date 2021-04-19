@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="iris">
+<robot name="collision_avoid_iris">
   <joint name="iris__/imu_joint" type="fixed">
     <parent link="iris__base_link"/>
     <child link="iris__/imu_link"/>
@@ -50,7 +50,7 @@
     <visual name="iris__base_link_inertia_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://collision_avoid_sim/urdf/iris/meshes/iris.stl" scale="1 1 1"/>
+        <mesh filename="package://collision_avoid_sim/urdf/collision_avoid_iris/meshes/iris.stl" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
@@ -76,7 +76,7 @@
     <visual name="iris__rotor_0_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://collision_avoid_sim/urdf/iris/meshes/iris_prop_ccw.dae" scale="1 1 1"/>
+        <mesh filename="package://collision_avoid_sim/urdf/collision_avoid_iris/meshes/iris_prop_ccw.dae" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
@@ -95,7 +95,7 @@
     <visual name="iris__rotor_1_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://collision_avoid_sim/urdf/iris/meshes/iris_prop_ccw.dae" scale="1 1 1"/>
+        <mesh filename="package://collision_avoid_sim/urdf/collision_avoid_iris/meshes/iris_prop_ccw.dae" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
@@ -114,7 +114,7 @@
     <visual name="iris__rotor_2_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://collision_avoid_sim/urdf/iris/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+        <mesh filename="package://collision_avoid_sim/urdf/collision_avoid_iris/meshes/iris_prop_cw.dae" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
@@ -133,7 +133,7 @@
     <visual name="iris__rotor_3_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://collision_avoid_sim/urdf/iris/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+        <mesh filename="package://collision_avoid_sim/urdf/collision_avoid_iris/meshes/iris_prop_cw.dae" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
